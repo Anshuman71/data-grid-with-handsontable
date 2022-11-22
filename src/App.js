@@ -1,23 +1,88 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { HotTable } from "@handsontable/react";
+import { HyperFormula } from "hyperformula";
+import { registerAllModules } from "handsontable/registry";
+import "handsontable/dist/handsontable.full.min.css";
+import { useState } from "react";
+
+// register Handsontable's modules
+registerAllModules();
+
+const DEPARTMENTS = [
+  "Sales",
+  "Engineering",
+  "Product",
+  "Marketing",
+  "Accounts",
+];
+
+const STATISTICS = [
+  ["Sum ($)", "Average ($)", "Max ($)"],
+  [
+    "=SUM(ledger!C:ledger!C)",
+    "=AVERAGE(ledger!C:ledger!C)",
+    "=MAX(ledger!C:ledger!C)",
+  ],
+];
+
+const AmountConfig = {
+  type: "numeric",
+  numericFormat: {
+    pattern: "$0,0.00",
+    culture: "en-US",
+  },
+};
 
 function App() {
+  const [data, setData] = useState([
+    ["Setting up the ledger", "Engineering", 400],
+  ]);
+
+  const hyperformulaInstance = HyperFormula.buildEmpty({
+    licenseKey: "internal-use-in-handsontable",
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "10px 20px" }}>
+      <h1>Ledger with Handsontable</h1>
+      <hr />
+      <h2>Ledger</h2>
+      <HotTable
+        data={data}
+        columns={[
+          {},
+          {
+            editor: "select",
+            selectOptions: DEPARTMENTS,
+          },
+          AmountConfig,
+        ]}
+        formulas={{
+          engine: hyperformulaInstance,
+          sheetName: "ledger",
+        }}
+        rowHeaders={false}
+        colHeaders={["Note", "Department", "Amount ($)"]}
+        height="auto"
+        licenseKey="non-commercial-and-evaluation"
+      />
+      <button
+        style={{ marginTop: 10 }}
+        onClick={() => setData((d) => [...d, ["", "", ""]])}
+      >
+        Add row
+      </button>
+      <h2>Statistics</h2>
+      <HotTable
+        data={STATISTICS}
+        height="auto"
+        formulas={{
+          engine: hyperformulaInstance,
+          sheetName: "statistics",
+        }}
+        columns={[AmountConfig, AmountConfig, AmountConfig]}
+        licenseKey="non-commercial-and-evaluation"
+      />
     </div>
   );
 }
