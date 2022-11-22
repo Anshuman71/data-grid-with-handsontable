@@ -68,7 +68,7 @@ function App() {
       />
       <button
         style={{ marginTop: 10 }}
-        onClick={() => setData((d) => [...d, ["", "", ""]])}
+        onClick={() => setData((prevData) => [...prevData, ["", "", ""]])}
       >
         Add row
       </button>
