@@ -16,6 +16,11 @@ const DEPARTMENTS = [
   "Accounts",
 ];
 
+const DepartmentConfig = {
+  editor: "select",
+  selectOptions: DEPARTMENTS,
+}
+
 const STATISTICS = [
   ["Sum ($)", "Average ($)", "Max ($)"],
   [
@@ -51,10 +56,7 @@ function App() {
         data={data}
         columns={[
           {},
-          {
-            editor: "select",
-            selectOptions: DEPARTMENTS,
-          },
+          DepartmentConfig,
           AmountConfig,
         ]}
         formulas={{
